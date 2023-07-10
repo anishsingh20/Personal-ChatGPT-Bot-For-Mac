@@ -25,6 +25,12 @@ Some details on setting up [Langchain](https://python.langchain.com/docs/get_sta
   ```
 pip install langchain openai chromadb tiktoken unstructured
   ```
+Or, if the above command says ```bash: pip: command not found```, try using ```pip3``` :
+
+```
+pip3 install langchain openai chromadb tiktoken unstructured
+```
+
 
 2) Create a new Python file on your local directory on Mac by the name ```~/openai_apikey.py``` and copy and paste your generated [OpenAI API](https://platform.openai.com/account/api-keys) key.
 
