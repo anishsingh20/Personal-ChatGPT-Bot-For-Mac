@@ -34,3 +34,8 @@ APIKEY = "<your OpenAI API key>"
 
 
 3) Place your data into ```data/My_data.txt```.
+
+
+
+
+4) Now create another Python file in the same working directory, which will contain all the code and necessary modules -- ***REAL MAGIC HAPPENS HERE*** -- ```my_chatGPT_bot.py```
