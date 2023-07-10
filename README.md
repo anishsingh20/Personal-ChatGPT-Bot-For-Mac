@@ -1,6 +1,8 @@
 # Personal-ChatGPT-Bot-For-Mac
 
-Create and deploy your chatGPT bot written in Python using the ChatGPT API, LangChain, and just a few lines of code.
+Create and deploy your chatGPT bot written in Python using the [ChatGPT API](https://platform.openai.com/account/api-keys), [LangChain](https://python.langchain.com/docs/get_started/quickstart), and just a few lines of code. 
+
+Follow along fellas, for some magic. 
 
 1) Easy to setup
 2) Train on whatever data you want and OpenAI data using the OpenAI API.
@@ -9,6 +11,8 @@ Create and deploy your chatGPT bot written in Python using the ChatGPT API, Lang
 
 ***DISCLAIMER: PLEASE DO NOT USE ANY SENSITIVE PERSONAL DATA TO TRAIN THE MODEL***
 
+
+------
 
 
 
