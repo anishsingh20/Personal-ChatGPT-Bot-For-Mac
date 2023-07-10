@@ -11,6 +11,7 @@ Create and deploy your chatGPT bot written in Python using the ChatGPT API, Lang
 
 
 
+
 ## SETTING-UP
 
 Some details on setting up [Langchain](https://python.langchain.com/docs/get_started/quickstart)
@@ -30,3 +31,6 @@ pip install langchain openai chromadb tiktoken unstructured
 # and rename this file to openai_apikey.py.
 APIKEY = "<your OpenAI API key>"
 ```
+
+
+3) Place your data into ```data/My_data.txt```.
