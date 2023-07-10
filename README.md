@@ -3,7 +3,7 @@
 Create and deploy your chatGPT bot written in Python using the ChatGPT API, LangChain, and just a few lines of code.
 
 1) Easy to setup
-2) Train on your data and OpenAI data using the OpenAI API.
+2) Train on whatever data you want, the backend LLM model to learn from, and OpenAI data using the OpenAI API.
 3) Use the best of both worlds
 
 
