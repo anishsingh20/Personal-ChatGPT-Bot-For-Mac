@@ -8,7 +8,9 @@ $ git clone https://github.com/anishsingh20/Personal-ChatGPT-Bot-For-Mac.git
 
 ```
 
-If any issues arise, feel free to open up and issue. 
+If you have any issues, please feel free to open up and issue. 
+
+#### Link to the Medium blog post on the topic: https://anishsinghwalia.medium.com/build-and-deploy-your-personal-chatgpt-bot-in-python-with-chatgpt-api-on-macos-951a16aaaff7 
 
 ### INTRODUCTION
 
