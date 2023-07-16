@@ -1,5 +1,14 @@
 # Build and Deploy Your Personal ChatGPT Bot in Python with ChatGPT API in Mac
 
+To setup on your MacBook or Machine, clone the repository and replace the data inside the ```/data```  directory with yours. 
+
+```shell
+
+$ git clone https://github.com/anishsingh20/Personal-ChatGPT-Bot-For-Mac.git
+
+```
+
+If any issues arise, feel free to open up and issue. 
 
 ### INTRODUCTION
 
