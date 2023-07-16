@@ -1,7 +1,11 @@
-# Build and Deploy Your Personal ChatGPT Bot in Python with ChatGPT API, LangChain for Mac
+# Build and Deploy Your Personal ChatGPT Bot in Python with ChatGPT API in Mac
 
 
 ### INTRODUCTION
+
+In today's digital age, chatbots have become essential for enhancing customer support, automating tasks, and delivering engaging user experiences. OpenAI's ChatGPT API, powered by the advanced gpt-3.5-turbo-16k model, offers a powerful solution for creating interactive chatbots. 
+
+In this tutorial, I will guide you through building and deploying your own ChatGPT bot using just a few lines of Python code on your Mac. With this approach, your bot will even be able to consider and utilize local personal user data stored in various file formats to answer questions about you and the kind of data you store inside that directory locally. Isn't it awesome?
 
 
 ### USEFUL LINK
@@ -15,6 +19,7 @@ https://platform.openai.com/docs/guides/gpt
 
 Before diving into the implementation, ensure you have the following:
 A Mac computer (this tutorial is specifically tailored for macOS users)
+
   1) Python 3.7 or higher installed  
   2) Basic knowledge of Python programming
   3) An OpenAI account with access to the ChatGPT API
@@ -22,30 +27,31 @@ A Mac computer (this tutorial is specifically tailored for macOS users)
 
 ### Step 1: Setting Up the Environment
 
-We need to set up a Python environment and install the necessary libraries. Open a terminal and create a new directory for your project. Once inside the project directory, create a virtual environment by running the following commands:
-
+We need to set up a Python environment and install the necessary libraries. Open a terminal and create a new directory for your project.
 
 ```shell
 
 $ mkdir chatgpt-bot
 $ cd chatgpt-bot
-$ python3 -m venv venv
-$ source venv/bin/activate
 
 ```
 
-Here, we will use two crucial libraries: [OpenAI](https://platform.openai.com/) and [LangChain](https://github.com/hwchase17/langchain).
+Here, we will use the three crucial libraries: ```OpenAI```,```textract```, and ```glob``` to implement this.
+OpenAI is a leading artificial intelligence research organization that has developed the [ChatGPT API](https://platform.openai.com/docs/api-reference), which allows us to interact with the powerful ChatGPT model. With the OpenAI API, we can send prompts and receive responses from the ChatGPT model, enabling us to create conversational chatbots.
+You can learn more about OpenAI and its offerings here.
 
-OpenAI is a leading artificial intelligence research organization that has developed the ChatGPT API, which allows us to interact with the powerful ChatGPT model. With the OpenAI API, we can send prompts and receive responses from the ChatGPT model, enabling us to create conversational chatbots.
-You can learn more about OpenAI and its offerings [here](https://openai.com/).
+The second textract Python library package provides text extraction capabilities from various file formats. It supports a wide range of file formats, including but not limited to:
+  1. Text-based formats: TXT, CSV, JSON, XML, HTML, Markdown, and LaTeX.
+  2. Document formats: DOC, DOCX, XLS, XLSX, PPT, PPTX, ODT, and ODS.
+  3. eBook formats: EPUB, MOBI, AZW, and FB2.
+  4. Image formats with embedded text: JPG, PNG, BMP, GIF, TIFF, and PDF (both searchable and scanned).
+  4. Programming source code files: Python, C, C++, Java, JavaScript, PHP, Ruby, and more.
 
-LangChain is a Python library that provides utility functions for handling text-based inputs and outputs when working with OpenAI's language models. It helps with tokenization, text formatting, and managing conversational context. LangChain simplifies constructing prompt chains for conversations with the ChatGPT model. You can find more information about LangChain here.
-
-By installing both OpenAI and LangChain, we have all the necessary tools to build our ChatGPT bot. Let's proceed to the next steps and bring our chatbot to life!
+The ```glob``` package in Python is a built-in module that provides a convenient way to search for files and directories using pattern matching. It allows you to find files that match a specified pattern, such as all files with a particular extension or files with specific naming patterns.
 Next, let's install the required Python libraries:
 
 ```shell
-$ pip install openai langchain
+$ pip install openai textract glob
 ```
 
 ### Step 2: Obtaining OpenAI API Access
@@ -58,85 +64,128 @@ Once you have the API key, save it securely as an environment variable in your t
 export OPENAI_API_KEY='your-api-key'
 ```
 
-### Step 3: Building the ChatGPT Bot
+### Step 3: Create a /data Directory in the project's current working directory to store your data:
 
-Now, let's write the code for our ChatGPT bot. Create a new Python file, such as ```chatbot.py```, and add the following code:
+Add all personal files there, containing anything from .txt to any .csv, or bot.docx files. The model will use the data inside this directory to answer  your personal questions based on the data you store here. For example, I have created a .txt file inside this directory and added my resume.
+
+<img width="450" alt="Screenshot 2023-07-16 at 5 47 20 PM" src="https://github.com/anishsingh20/Personal-ChatGPT-Bot-For-Mac/assets/15655876/86dbba3d-2c24-4252-9cd0-4d4e85d449ea">
+
+<img width="450" alt="Screenshot 2023-07-16 at 5 45 24 PM" src="https://github.com/anishsingh20/Personal-ChatGPT-Bot-For-Mac/assets/15655876/58848d85-ca4c-4e40-87f5-68d6ca4830c2">
+
+
+### Step 4: Building the ChatGPT Bot
+
+Now, let's write the code for our ChatGPT bot. Create a new Python file, such as ```chatGPTbot.py```, and add the following code:
 
 ```python
-import openai
-from langchain import LangChain
+
 import os
 import glob
+import openai
+import textract
 
-def create_chatbot():
-    openai.api_key = os.getenv("OPENAI_API_KEY")
-    langchain = LangChain()
+class Chatbot:
+    def __init__(self):
+        self.openai_api_key = os.getenv("OPENAI_API_KEY")
+        self.chat_history = []
 
-    def get_chat_response(message):
-        response = openai.Completion.create(
-            engine="text-davinci-003",
-            prompt=langchain.chain(message),
-            temperature=0.8,
-            max_tokens=50,
+    def append_to_chat_history(self, message):
+        self.chat_history.append(message)
+
+    def read_personal_file(self, file_path):
+        try:
+            text = textract.process(file_path).decode("utf-8")
+            return text
+        except Exception as e:
+            print(f"Error reading file {file_path}: {e}")
+            return ""
+
+    def collect_user_data(self):
+        data_directory = "./data"
+        data_files = glob.glob(os.path.join(data_directory, "*.*"))
+
+        user_data = ""
+        for file in data_files:
+            file_extension = os.path.splitext(file)[1].lower()
+            if file_extension in (".pdf", ".docx", ".xlsx", ".xls"):
+                user_data += self.read_personal_file(file)
+            else:
+                with open(file, "r", encoding="utf-8") as f:
+                    user_data += f.read() + "\n"
+
+        return user_data
+
+    def create_chat_response(self, message):
+        self.append_to_chat_history(message)
+
+        user_data = self.collect_user_data()
+        messages = [
+            {"role": "system", "content": "You are the most helpful assistant."},
+            {"role": "user", "content": message},
+            {"role": "assistant", "content": message},
+        ]
+
+        if user_data:
+            messages.append({"role": "user", "content": user_data})
+
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-16k",
+            messages=messages,
+            temperature=1,
+            max_tokens=256,
+            top_p=1,
             n=1,
             stop=None,
-            log_level="info",
+            frequency_penalty=0,
+            presence_penalty=0
         )
-        return response.choices[0].text.strip()
 
-    def import_personal_data(directory):
-        supported_extensions = [".txt", ".docx", ".xlsx"]
-        for file_path in glob.glob(f"{directory}/*"):
-            file_extension = os.path.splitext(file_path)[1]
-            if file_extension in supported_extensions:
-                with open(file_path, "r") as file:
-                    personal_data = file.read()
-                    langchain.add_text(personal_data)
-            else:
-                print(f"Warning: Skipping unsupported file '{file_path}'")
+        self.append_to_chat_history(response.choices[0].message.content.strip())
+        return response.choices[0].message.content.strip()
 
-    # Specify the directory containing your personal data files
-    personal_data_directory = "personal_data"
+    def start_chatting(self):
+        while True:
+            user_input = input("User: ")
+            if user_input.lower() == "exit":
+                print("Chatbot: Goodbye!")
+                break
+            bot_response = self.create_chat_response(user_input)
+            print("Chatbot:", bot_response)
 
-    # Import and add your personal data from various file types
-    import_personal_data(personal_data_directory)
-
-    while True:
-        user_input = input("User: ")
-        if user_input.lower() == "exit":
-            print("Chatbot: Goodbye!")
-            break
-        bot_response = get_chat_response(user_input)
-        print("Chatbot:", bot_response)
+# Create an instance of the Chatbot class and start the conversation
+chatbot = Chatbot()
+chatbot.start_chatting()
 
 ```
 
-In a gist, this code defines a create_chatbot() function that initializes the OpenAI API key and the LangChain utility. 
-The ```get_chat_response()``` function sends a user message to the ChatGPT model and returns the generated response.
+```append_to_chat_history(message)```: This function appends the user's message to the chat history stored in the chat_history list.
 
-We added an ```import_personal_data()``` function that takes the directory path as a parameter. It uses the glob module to iterate over the files in the specified directory. For each file, it checks if the file extension matches one of the supported extensions (e.g., .txt, .docx, .xlsx). If a file is compatible, its contents are read and added to the LangChain instance using ```langchain.add_text()```.
+```read_personal_file(file_path)```: This function utilizes the ```textract``` library to extract text from personal files. It attempts to decode the extracted text using UTF-8 encoding. An error message is displayed if any errors occur during the extraction process.
 
-We also added an additional else block inside the ```import_personal_data()``` function. If a file has an unsupported extension, it will print a warning message indicating the unsupported file and continue to the next file. This way, you'll receive feedback about the skipped files and can ensure that your personal data consists of supported file types.
+```collect_user_data()```: This function collects the user's data stored in the "/data" directory, placed inside the current working directory. It iterates through the files in the directory, determines their file types, and uses the appropriate method to extract text. It returns the combined user data as a string.
 
-To use this functionality, create a directory named ```"personal_data"``` in the project's current working directory and place your files with compatible extensions (e.g., text files, Excel files, Word documents) inside it. The code will scan the directory and incorporate the contents of those files into the LangChain instance.
+```create_chat_response(message)```: This function constructs the chat response using the OpenAI ChatCompletion API. It appends the user's message and the collected user data (if any) to the message list. The API call is made with the provided messages, and the response is stored in the response variable. The function then appends the response to the chat history and returns it.
 
-With this code, your ChatGPT bot can train and answer queries based on data from various file types. It provides a personalized experience that leverages your data across different file formats. Enjoy exploring and interacting with your enhanced ChatGPT bot!
+```start_chatting()```: This function initiates an interactive chat session with the user. It prompts the user for input, generates the bot's response using create_chat_response(), and prints the response. The conversation continues until the user enters "exit" to quit.
 
-At the end, the while True loop continuously prompts the user for input. ***To exit the chatbot, type "exit."***
+In a nutshell:
+
+In the end, the while True loop continuously prompts the user for input. ***To exit the chatbot, type "exit."***
 
 
-### Step 4: Deploying the ChatGPT Bot
+### Step 5: Deploying the ChatGPT Bot
 
-We need to create an executable script to deploy our chatbot as a command-line tool. In your terminal, run the following command:
+To run the program, you must open a terminal and execute the Python file. In your terminal, run the following command:
 
 ```shell
-$ chmod +x chatbot.py
+$ python chatGPTbot.py
+Or
+$ python3 chatGPTbot.py
 ```
+<img width="821" alt="Screenshot 2023-07-16 at 5 29 53 PM" src="https://github.com/anishsingh20/Personal-ChatGPT-Bot-For-Mac/assets/15655876/1ebab853-2bf2-495b-bd76-cb469b75b03d">
 
-This command gives the script executable permissions. Now, you can run the chatbot by executing the following command:
 
-```shell
-$ ./chatbot.py
-```
 
-Voila! Your personal ChatGPT bot is now ready to chat. Start interacting with it by entering messages, and the bot will respond accordingly. When you're finished, simply type "exit" to end the conversation.
+
+
+Voila! Your personal ChatGPT bot is now ready to chat. You can start interacting with it by entering messages, and the bot will respond accordingly. When you're finished, simply type "exit" to end the conversation.
