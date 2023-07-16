@@ -4,6 +4,13 @@
 ### INTRODUCTION
 
 
+### USEFUL LINK
+
+https://platform.openai.com/playground?mode=chat&model=gpt-3.5-turbo-16k
+
+https://platform.openai.com/docs/guides/gpt
+
+
 ### PRE-REQUISITES
 
 Before diving into the implementation, ensure you have the following:
